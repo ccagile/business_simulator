@@ -8,35 +8,61 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="game-container">
-        <div id="header">
-            <h1>Business Simulator</h1>
-            <div id="balance">Saldo: €<span id="balance-amount">500</span></div>
-            <div id="time">Tempo: <span id="game-time">01/01/2023 00:00</span></div>
-            <div id="day">Giorno: <span id="day-of-week">Lunedì</span></div>
-        </div>
-        <div id="main-content">
-            <div id="actions">
-                <h2>Azioni</h2>
-                <button id="work">Lavora</button>
-                <button id="buy-tablet">Compra Tablet (€300)</button>
-                <button id="buy-computer">Compra Computer (€1000)</button>
-                <button id="buy-server">Compra Server (€5000)</button>
-            </div>
-            <div id="tablet-apps" class="hidden">
-                <button id="email-button">Email</button>
-                <button id="tasks-button">Incarichi</button>
-                <button id="image-editor-button">Editor Immagini</button>
-            </div>
-            <div id="task-info">
-                <h2>Incarico Corrente</h2>
-                <div id="current-task"></div>
-            </div>
-        </div>
-        <div id="notification" class="hidden"></div>
+    <div id="start-screen" class="screen">
+        <h1>Business Simulator</h1>
+        <button id="play-btn" class="btn green">Gioca</button>
+        <button id="load-btn" class="btn blue">Carica</button>
+        <button id="updates-btn" class="btn orange">Aggiornamenti</button>
     </div>
+
+    <div id="game-screen" class="screen hidden">
+        <div id="game-info">
+            <span id="balance"></span>
+            <span id="game-time"></span>
+            <span id="day-of-week"></span>
+            <span id="level"></span>
+        </div>
+        <button id="shop-btn" class="btn blue">Negozio</button>
+        <button id="save-btn" class="btn green">Salva</button>
+        <div id="tablet-apps" class="hidden">
+            <button id="tasks-app" class="btn yellow">Incarichi</button>
+            <button id="email-app" class="btn light-blue">Email</button>
+            <button id="image-editor-app" class="btn orange">Editor Immagini</button>
+        </div>
+    </div>
+
+    <div id="shop-screen" class="screen hidden">
+        <h2>Negozio</h2>
+        <button id="buy-tablet" class="btn green">Compra Tablet (€300)</button>
+        <button id="buy-computer" class="btn blue">Compra Computer (€2250)</button>
+        <button id="buy-server" class="btn orange">Compra Server (€15000)</button>
+        <button id="back-to-game" class="btn dark-blue">Torna al gioco</button>
+    </div>
+
+    <div id="tasks-screen" class="screen hidden">
+        <h2>Incarichi disponibili</h2>
+        <div id="tasks-list"></div>
+        <button id="back-from-tasks" class="btn dark-blue">Torna al gioco</button>
+    </div>
+
+    <div id="image-editor-screen" class="screen hidden">
+        <h2>Editor Immagini</h2>
+        <p id="edit-counter"></p>
+        <button id="edit-image" class="btn green">Modifica immagine</button>
+        <button id="back-from-editor" class="btn dark-blue">Torna al gioco</button>
+    </div>
+
+    <div id="email-screen" class="screen hidden">
+        <h2>Email</h2>
+        <div id="email-list"></div>
+        <button id="back-from-email" class="btn dark-blue">Torna al gioco</button>
+    </div>
+
+    <div id="version">v1.1.0</div>
+
     <audio id="click-sound" src="click.mp3"></audio>
     <audio id="success-sound" src="success.mp3"></audio>
+
     <script src="script.js"></script>
 </body>
 </html>
