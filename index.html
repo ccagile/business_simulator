@@ -11,8 +11,9 @@
     <div id="start-screen" class="screen">
         <h1><i class="fas fa-briefcase"></i> Business Simulator</h1>
         <button id="play-btn" class="btn green"><i class="fas fa-play"></i> Gioca</button>
+        <button id="load-btn" class="btn blue"><i class="fas fa-download"></i> Carica</button>
         <button id="updates-btn" class="btn dark-blue"><i class="fas fa-sync-alt"></i> Aggiornamenti</button>
-        <div id="version">v1.0.0</div>
+        <div id="version">v1.1.0</div>
     </div>
 
     <div id="game-screen" class="screen hidden">
@@ -20,6 +21,7 @@
             <div id="balance"><i class="fas fa-wallet"></i> €500</div>
             <div id="game-time"><i class="far fa-clock"></i> 00:00</div>
             <div id="day-of-week"><i class="far fa-calendar-alt"></i> Lunedì</div>
+            <div id="level">Livello: 1</div>
         </div>
         <button id="shop-btn" class="btn orange"><i class="fas fa-store"></i> Negozio</button>
         <div id="tablet-apps" class="hidden">
@@ -27,6 +29,7 @@
             <button id="email-app" class="btn light-blue"><i class="fas fa-envelope"></i> Email</button>
             <button id="image-editor-app" class="btn dark-blue"><i class="fas fa-image"></i> Editor Immagini</button>
         </div>
+        <button id="save-btn" class="btn green"><i class="fas fa-save"></i> Salva</button>
     </div>
 
     <div id="shop-screen" class="screen hidden">
@@ -49,6 +52,15 @@
         <div id="edit-counter"></div>
         <button id="back-from-editor" class="btn"><i class="fas fa-arrow-left"></i> Torna al gioco</button>
     </div>
+
+    <div id="email-screen" class="screen hidden">
+        <h2><i class="fas fa-envelope"></i> Email</h2>
+        <div id="email-list"></div>
+        <button id="back-from-email" class="btn"><i class="fas fa-arrow-left"></i> Torna al gioco</button>
+    </div>
+
+    <audio id="click-sound" src="click.mp3"></audio>
+    <audio id="success-sound" src="success.mp3"></audio>
 
     <script src="script.js"></script>
 </body>

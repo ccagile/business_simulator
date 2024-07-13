@@ -5,6 +5,17 @@ const daysOfWeek = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì',
 let inventory = { tablet: false, computer: false, server: false };
 let currentTask = null;
 let availableTasks = [];
+let level = 1;
+let experience = 0;
+let emails = [];
+
+const clickSound = document.getElementById('click-sound');
+const successSound = document.getElementById('success-sound');
+
+function playSound(sound) {
+    sound.currentTime = 0;
+    sound.play();
+}
 
 function updateGameTime() {
     gameTime.setMinutes(gameTime.getMinutes() + 1);
@@ -19,12 +30,18 @@ function updateBalance() {
     document.getElementById('balance').innerHTML = `<i class="fas fa-wallet"></i> €${balance}`;
 }
 
+function updateLevel() {
+    document.getElementById('level').textContent = `Livello: ${level}`;
+}
+
 function generateTask() {
     if (availableTasks.length < 3) {
         const taskTypes = [
-            { description: "Edita 5 immagini tramite Editor Immagini", count: 5 },
-            { description: "Edita 1 Immagine tramite Editor Immagini", count: 1 },
-            { description: "Edita 2 Immagini tramite Editor Immagini", count: 2 },
+            { description: "Edita 5 immagini tramite Editor Immagini", count: 5, reward: 50, expReward: 25 },
+            { description: "Edita 1 Immagine tramite Editor Immagini", count: 1, reward: 10, expReward: 5 },
+            { description: "Edita 2 Immagini tramite Editor Immagini", count: 2, reward: 20, expReward: 10 },
+            { description: "Analizza dati sul computer", count: 1, reward: 30, expReward: 15 },
+            { description: "Gestisci il server", count: 1, reward: 100, expReward: 50 },
         ];
         const randomTask = taskTypes[Math.floor(Math.random() * taskTypes.length)];
         availableTasks.push(randomTask);
@@ -39,6 +56,7 @@ function updateTasksList() {
         const taskElement = document.createElement('div');
         taskElement.innerHTML = `
             <p>${task.description}</p>
+            <p>Ricompensa: €${task.reward}</p>
             <button class="btn green" onclick="acceptTask(${index})">
                 <i class="fas fa-check"></i> Accetta
             </button>
@@ -54,6 +72,7 @@ function acceptTask(index) {
     showNotification(`Hai accettato l'incarico: ${currentTask.description}`);
     document.getElementById('tasks-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
 }
 
 function editImage() {
@@ -65,17 +84,30 @@ function editImage() {
             currentTask.count--;
             document.getElementById('edit-counter').textContent = `Immagini rimanenti: ${currentTask.count}`;
             if (currentTask.count === 0) {
-                const reward = currentTask.count * 2;
-                balance += reward;
+                balance += currentTask.reward;
+                experience += currentTask.expReward;
                 updateBalance();
-                showNotification(`Incarico completato! Hai guadagnato €${reward}`);
+                checkLevelUp();
+                showNotification(`Incarico completato! Hai guadagnato €${currentTask.reward} e ${currentTask.expReward} XP`);
                 currentTask = null;
                 document.getElementById('image-editor-screen').classList.add('hidden');
                 document.getElementById('game-screen').classList.remove('hidden');
+                playSound(successSound);
             }
             editButton.disabled = false;
             editButton.innerHTML = '<i class="fas fa-edit"></i> Modifica immagine';
         }, 5000);
+    }
+}
+
+function checkLevelUp() {
+    const expNeeded = level * 100;
+    if (experience >= expNeeded) {
+        level++;
+        experience -= expNeeded;
+        updateLevel();
+        showNotification(`Congratulazioni! Sei salito al livello ${level}!`);
+        playSound(successSound);
     }
 }
 
@@ -95,18 +127,102 @@ function showNotification(message) {
     }, 100);
 }
 
+function generateEmail() {
+    const emailTypes = [
+        { subject: "Nuova opportunità di lavoro", body: "Abbiamo un'interessante proposta per te. Controlla gli incarichi disponibili!" },
+        { subject: "Aggiornamento software", body: "È disponibile un nuovo aggiornamento per il tuo software. Visita il negozio per saperne di più." },
+        { subject: "Offerta speciale", body: "Solo per oggi, sconti speciali su tutte le attrezzature nel negozio!" },
+    ];
+    const randomEmail = emailTypes[Math.floor(Math.random() * emailTypes.length)];
+    emails.push(randomEmail);
+    updateEmailList();
+}
+
+function updateEmailList() {
+    const emailList = document.getElementById('email-list');
+    emailList.innerHTML = '';
+    emails.forEach((email, index) => {
+        const emailElement = document.createElement('div');
+        emailElement.innerHTML = `
+            <h3>${email.subject}</h3>
+            <p>${email.body}</p>
+            <button class="btn red" onclick="deleteEmail(${index})">
+                <i class="fas fa-trash"></i> Elimina
+            </button>
+        `;
+        emailList.appendChild(emailElement);
+    });
+}
+
+function deleteEmail(index) {
+    emails.splice(index, 1);
+    updateEmailList();
+    playSound(clickSound);
+}
+
+function saveGame() {
+    const gameState = {
+        balance: balance,
+        gameTime: gameTime.getTime(),
+        dayOfWeek: dayOfWeek,
+        inventory: inventory,
+        availableTasks: availableTasks,
+        level: level,
+        experience: experience,
+        emails: emails
+    };
+    localStorage.setItem('businessSimulatorSave', JSON.stringify(gameState));
+    showNotification('Gioco salvato con successo!');
+}
+
+function loadGame() {
+    const savedGame = localStorage.getItem('businessSimulatorSave');
+    if (savedGame) {
+        const gameState = JSON.parse(savedGame);
+        balance = gameState.balance;
+        gameTime = new Date(gameState.gameTime);
+        dayOfWeek = gameState.dayOfWeek;
+        inventory = gameState.inventory;
+        availableTasks = gameState.availableTasks;
+        level = gameState.level;
+        experience = gameState.experience;
+        emails = gameState.emails;
+        updateBalance();
+        updateGameTime();
+        updateLevel();
+        updateTasksList();
+        updateEmailList();
+        if (inventory.tablet) {
+            document.getElementById('tablet-apps').classList.remove('hidden');
+        }
+        showNotification('Gioco caricato con successo!');
+    } else {
+        showNotification('Nessun salvataggio trovato.');
+    }
+}
+
 document.getElementById('play-btn').onclick = () => {
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
+};
+
+document.getElementById('load-btn').onclick = () => {
+    loadGame();
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
 };
 
 document.getElementById('updates-btn').onclick = () => {
-    showNotification('Aggiornamenti: Versione iniziale 1.0.0');
+    showNotification('Aggiornamenti: Versione 1.1.0 - Aggiunto sistema di livelli e email');
+    playSound(clickSound);
 };
 
 document.getElementById('shop-btn').onclick = () => {
     document.getElementById('game-screen').classList.add('hidden');
     document.getElementById('shop-screen').classList.remove('hidden');
+    playSound(clickSound);
 };
 
 document.getElementById('buy-tablet').onclick = () => {
@@ -116,8 +232,10 @@ document.getElementById('buy-tablet').onclick = () => {
         updateBalance();
         document.getElementById('tablet-apps').classList.remove('hidden');
         showNotification('Hai acquistato un tablet!');
+        playSound(successSound);
     } else {
         showNotification('Non puoi acquistare il tablet.');
+        playSound(clickSound);
     }
 };
 
@@ -127,8 +245,10 @@ document.getElementById('buy-computer').onclick = () => {
         inventory.computer = true;
         updateBalance();
         showNotification('Hai acquistato un computer!');
+        playSound(successSound);
     } else {
         showNotification('Non puoi acquistare il computer.');
+        playSound(clickSound);
     }
 };
 
@@ -138,20 +258,31 @@ document.getElementById('buy-server').onclick = () => {
         inventory.server = true;
         updateBalance();
         showNotification('Hai acquistato un server!');
+        playSound(successSound);
     } else {
         showNotification('Non puoi acquistare il server.');
+        playSound(clickSound);
     }
 };
 
 document.getElementById('back-to-game').onclick = () => {
     document.getElementById('shop-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
 };
 
 document.getElementById('tasks-app').onclick = () => {
     document.getElementById('game-screen').classList.add('hidden');
     document.getElementById('tasks-screen').classList.remove('hidden');
     updateTasksList();
+    playSound(clickSound);
+};
+
+document.getElementById('email-app').onclick = () => {
+    document.getElementById('game-screen').classList.add('hidden');
+    document.getElementById('email-screen').classList.remove('hidden');
+    updateEmailList();
+    playSound(clickSound);
 };
 
 document.getElementById('image-editor-app').onclick = () => {
@@ -159,8 +290,10 @@ document.getElementById('image-editor-app').onclick = () => {
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('image-editor-screen').classList.remove('hidden');
         document.getElementById('edit-counter').textContent = `Immagini rimanenti: ${currentTask.count}`;
+        playSound(clickSound);
     } else {
         showNotification('Devi prima accettare un incarico.');
+        playSound(clickSound);
     }
 };
 
@@ -169,34 +302,28 @@ document.getElementById('edit-image').onclick = editImage;
 document.getElementById('back-from-tasks').onclick = () => {
     document.getElementById('tasks-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
 };
 
 document.getElementById('back-from-editor').onclick = () => {
     document.getElementById('image-editor-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
 };
+
+document.getElementById('back-from-email').onclick = () => {
+    document.getElementById('email-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+    playSound(clickSound);
+};
+
+document.getElementById('save-btn').onclick = saveGame;
 
 setInterval(updateGameTime, 1000);
 setInterval(generateTask, 345000);
+setInterval(generateEmail, 600000);
 
-// Aggiungi questo stile al tuo file CSS
-const style = document.createElement('style');
-style.textContent = `
-    .notification {
-        position: fixed;
-        bottom: -100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(52, 152, 219, 0.9);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 5px;
-        transition: bottom 0.5s ease-in-out;
-        z-index: 1000;
-    }
-
-    .notification.show {
-        bottom: 20px;
-    }
-`;
-document.head.appendChild(style);
+// Inizializza il gioco
+updateBalance();
+updateGameTime();
+updateLevel();
