@@ -4,49 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Business Simulator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="start-screen" class="screen">
-        <h1>Business Simulator</h1>
-        <button id="play-btn" class="btn green">Gioca</button>
-        <button id="updates-btn" class="btn dark-blue">Aggiornamenti</button>
+        <h1><i class="fas fa-briefcase"></i> Business Simulator</h1>
+        <button id="play-btn" class="btn green"><i class="fas fa-play"></i> Gioca</button>
+        <button id="updates-btn" class="btn dark-blue"><i class="fas fa-sync-alt"></i> Aggiornamenti</button>
         <div id="version">v1.0.0</div>
     </div>
 
     <div id="game-screen" class="screen hidden">
         <div id="game-info">
-            <div id="balance">Bilancio: €500</div>
-            <div id="game-time">00:00</div>
-            <div id="day-of-week">Lunedì</div>
+            <div id="balance"><i class="fas fa-wallet"></i> €500</div>
+            <div id="game-time"><i class="far fa-clock"></i> 00:00</div>
+            <div id="day-of-week"><i class="far fa-calendar-alt"></i> Lunedì</div>
         </div>
-        <button id="shop-btn" class="btn orange">🛒 Negozio</button>
+        <button id="shop-btn" class="btn orange"><i class="fas fa-store"></i> Negozio</button>
         <div id="tablet-apps" class="hidden">
-            <button id="tasks-app" class="btn yellow">📋 Incarichi</button>
-            <button id="email-app" class="btn light-blue">📧 Email</button>
-            <button id="image-editor-app" class="btn dark-blue">🖼️ Editor Immagini</button>
+            <button id="tasks-app" class="btn yellow"><i class="fas fa-tasks"></i> Incarichi</button>
+            <button id="email-app" class="btn light-blue"><i class="fas fa-envelope"></i> Email</button>
+            <button id="image-editor-app" class="btn dark-blue"><i class="fas fa-image"></i> Editor Immagini</button>
         </div>
     </div>
 
     <div id="shop-screen" class="screen hidden">
-        <h2>Negozio</h2>
-        <button id="buy-tablet" class="btn">Tablet - €300</button>
-        <button id="buy-computer" class="btn">Computer - €2250</button>
-        <button id="buy-server" class="btn">Server - €15000</button>
-        <button id="back-to-game" class="btn">Torna al gioco</button>
+        <h2><i class="fas fa-shopping-cart"></i> Negozio</h2>
+        <button id="buy-tablet" class="btn"><i class="fas fa-tablet-alt"></i> Tablet - €300</button>
+        <button id="buy-computer" class="btn"><i class="fas fa-desktop"></i> Computer - €2250</button>
+        <button id="buy-server" class="btn"><i class="fas fa-server"></i> Server - €15000</button>
+        <button id="back-to-game" class="btn"><i class="fas fa-arrow-left"></i> Torna al gioco</button>
     </div>
 
     <div id="tasks-screen" class="screen hidden">
-        <h2>Incarichi disponibili</h2>
+        <h2><i class="fas fa-clipboard-list"></i> Incarichi disponibili</h2>
         <div id="tasks-list"></div>
-        <button id="back-from-tasks" class="btn">Torna al gioco</button>
+        <button id="back-from-tasks" class="btn"><i class="fas fa-arrow-left"></i> Torna al gioco</button>
     </div>
 
     <div id="image-editor-screen" class="screen hidden">
-        <h2>Editor Immagini</h2>
-        <button id="edit-image" class="btn">Modifica immagine</button>
+        <h2><i class="fas fa-paint-brush"></i> Editor Immagini</h2>
+        <button id="edit-image" class="btn"><i class="fas fa-edit"></i> Modifica immagine</button>
         <div id="edit-counter"></div>
-        <button id="back-from-editor" class="btn">Torna al gioco</button>
+        <button id="back-from-editor" class="btn"><i class="fas fa-arrow-left"></i> Torna al gioco</button>
     </div>
 
     <script src="script.js"></script>

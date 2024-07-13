@@ -11,12 +11,12 @@ function updateGameTime() {
     if (gameTime.getHours() === 0 && gameTime.getMinutes() === 0) {
         dayOfWeek = (dayOfWeek % 7) + 1;
     }
-    document.getElementById('game-time').textContent = gameTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('day-of-week').textContent = daysOfWeek[dayOfWeek];
+    document.getElementById('game-time').innerHTML = `<i class="far fa-clock"></i> ${gameTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    document.getElementById('day-of-week').innerHTML = `<i class="far fa-calendar-alt"></i> ${daysOfWeek[dayOfWeek]}`;
 }
 
 function updateBalance() {
-    document.getElementById('balance').textContent = `Bilancio: €${balance}`;
+    document.getElementById('balance').innerHTML = `<i class="fas fa-wallet"></i> €${balance}`;
 }
 
 function generateTask() {
@@ -37,11 +37,12 @@ function updateTasksList() {
     tasksList.innerHTML = '';
     availableTasks.forEach((task, index) => {
         const taskElement = document.createElement('div');
-        taskElement.textContent = task.description;
-        const acceptButton = document.createElement('button');
-        acceptButton.textContent = 'Accetta';
-        acceptButton.onclick = () => acceptTask(index);
-        taskElement.appendChild(acceptButton);
+        taskElement.innerHTML = `
+            <p>${task.description}</p>
+            <button class="btn green" onclick="acceptTask(${index})">
+                <i class="fas fa-check"></i> Accetta
+            </button>
+        `;
         tasksList.appendChild(taskElement);
     });
 }
@@ -50,14 +51,16 @@ function acceptTask(index) {
     currentTask = availableTasks[index];
     availableTasks.splice(index, 1);
     updateTasksList();
-    // Simula l'invio di un'email
-    alert(`Hai accettato l'incarico: ${currentTask.description}`);
+    showNotification(`Hai accettato l'incarico: ${currentTask.description}`);
     document.getElementById('tasks-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
 }
 
 function editImage() {
     if (currentTask) {
+        const editButton = document.getElementById('edit-image');
+        editButton.disabled = true;
+        editButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Elaborazione...';
         setTimeout(() => {
             currentTask.count--;
             document.getElementById('edit-counter').textContent = `Immagini rimanenti: ${currentTask.count}`;
@@ -65,13 +68,31 @@ function editImage() {
                 const reward = currentTask.count * 2;
                 balance += reward;
                 updateBalance();
-                alert(`Incarico completato! Hai guadagnato €${reward}`);
+                showNotification(`Incarico completato! Hai guadagnato €${reward}`);
                 currentTask = null;
                 document.getElementById('image-editor-screen').classList.add('hidden');
                 document.getElementById('game-screen').classList.remove('hidden');
             }
+            editButton.disabled = false;
+            editButton.innerHTML = '<i class="fas fa-edit"></i> Modifica immagine';
         }, 5000);
     }
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 500);
+        }, 3000);
+    }, 100);
 }
 
 document.getElementById('play-btn').onclick = () => {
@@ -80,7 +101,7 @@ document.getElementById('play-btn').onclick = () => {
 };
 
 document.getElementById('updates-btn').onclick = () => {
-    alert('Aggiornamenti: Versione iniziale 1.0.0');
+    showNotification('Aggiornamenti: Versione iniziale 1.0.0');
 };
 
 document.getElementById('shop-btn').onclick = () => {
@@ -94,9 +115,9 @@ document.getElementById('buy-tablet').onclick = () => {
         inventory.tablet = true;
         updateBalance();
         document.getElementById('tablet-apps').classList.remove('hidden');
-        alert('Hai acquistato un tablet!');
+        showNotification('Hai acquistato un tablet!');
     } else {
-        alert('Non puoi acquistare il tablet.');
+        showNotification('Non puoi acquistare il tablet.');
     }
 };
 
@@ -105,9 +126,9 @@ document.getElementById('buy-computer').onclick = () => {
         balance -= 2250;
         inventory.computer = true;
         updateBalance();
-        alert('Hai acquistato un computer!');
+        showNotification('Hai acquistato un computer!');
     } else {
-        alert('Non puoi acquistare il computer.');
+        showNotification('Non puoi acquistare il computer.');
     }
 };
 
@@ -116,9 +137,9 @@ document.getElementById('buy-server').onclick = () => {
         balance -= 15000;
         inventory.server = true;
         updateBalance();
-        alert('Hai acquistato un server!');
+        showNotification('Hai acquistato un server!');
     } else {
-        alert('Non puoi acquistare il server.');
+        showNotification('Non puoi acquistare il server.');
     }
 };
 
@@ -139,7 +160,7 @@ document.getElementById('image-editor-app').onclick = () => {
         document.getElementById('image-editor-screen').classList.remove('hidden');
         document.getElementById('edit-counter').textContent = `Immagini rimanenti: ${currentTask.count}`;
     } else {
-        alert('Devi prima accettare un incarico.');
+        showNotification('Devi prima accettare un incarico.');
     }
 };
 
@@ -157,3 +178,25 @@ document.getElementById('back-from-editor').onclick = () => {
 
 setInterval(updateGameTime, 1000);
 setInterval(generateTask, 345000);
+
+// Aggiungi questo stile al tuo file CSS
+const style = document.createElement('style');
+style.textContent = `
+    .notification {
+        position: fixed;
+        bottom: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(52, 152, 219, 0.9);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        transition: bottom 0.5s ease-in-out;
+        z-index: 1000;
+    }
+
+    .notification.show {
+        bottom: 20px;
+    }
+`;
+document.head.appendChild(style);
