@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="start-screen" class="screen">
+        <h1>Business Simulator</h1>
+        <button id="play-btn" class="btn green">Gioca</button>
+        <button id="updates-btn" class="btn dark-blue">Aggiornamenti</button>
+        <div id="version">v1.0.0</div>
+    </div>
+
+    <div id="game-screen" class="screen hidden">
+        <div id="game-info">
+            <div id="balance">Bilancio: €500</div>
+            <div id="game-time">00:00</div>
+            <div id="day-of-week">Lunedì</div>
+        </div>
+        <button id="shop-btn" class="btn orange">🛒 Negozio</button>
+        <div id="tablet-apps" class="hidden">
+            <button id="tasks-app" class="btn yellow">📋 Incarichi</button>
+            <button id="email-app" class="btn light-blue">📧 Email</button>
+            <button id="image-editor-app" class="btn dark-blue">🖼️ Editor Immagini</button>
+        </div>
+    </div>
+
+    <div id="shop-screen" class="screen hidden">
+        <h2>Negozio</h2>
+        <button id="buy-tablet" class="btn">Tablet - €300</button>
+        <button id="buy-computer" class="btn">Computer - €2250</button>
+        <button id="buy-server" class="btn">Server - €15000</button>
+        <button id="back-to-game" class="btn">Torna al gioco</button>
+    </div>
+
+    <div id="tasks-screen" class="screen hidden">
+        <h2>Incarichi disponibili</h2>
+        <div id="tasks-list"></div>
+        <button id="back-from-tasks" class="btn">Torna al gioco</button>
+    </div>
+
+    <div id="image-editor-screen" class="screen hidden">
+        <h2>Editor Immagini</h2>
+        <button id="edit-image" class="btn">Modifica immagine</button>
+        <div id="edit-counter"></div>
+        <button id="back-from-editor" class="btn">Torna al gioco</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
